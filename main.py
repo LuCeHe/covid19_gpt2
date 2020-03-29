@@ -59,8 +59,8 @@ def main(epochs, data_repeats, _log):
     inputs_1 = tokenizer.encode_plus(sentence_0, sentence_1, add_special_tokens=True, return_tensors='pt')
     inputs_2 = tokenizer.encode_plus(sentence_0, sentence_2, add_special_tokens=True, return_tensors='pt')
 
-    del inputs_1["special_tokens_mask"]  # <---- add this
-    del inputs_2["special_tokens_mask"]  # <---- add this
+    #del inputs_1["special_tokens_mask"]  # <---- add this
+    #del inputs_2["special_tokens_mask"]  # <---- add this
 
     pred_1 = model.predict(**inputs_1)[0].argmax().item()
     pred_2 = model.predict(**inputs_2)[0].argmax().item()
