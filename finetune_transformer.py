@@ -1,11 +1,12 @@
 import tensorflow as tf
-#import tensorflow_datasets
+import tensorflow_datasets
 from transformers import *
 
 # Load dataset, tokenizer, model from pretrained model/vocabulary
 tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 model = TFBertForSequenceClassification.from_pretrained('bert-base-cased')
-data = tf.data.Datasets.load('glue/mrpc') #tensorflow_datasets.load('glue/mrpc')
+#data = tf.data.Datasets.load('glue/mrpc') #tensorflow_datasets.load('glue/mrpc')
+data = tensorflow_datasets.load('glue/mrpc')
 
 # Prepare dataset for GLUE as a tf.data.Dataset instance
 train_dataset = glue_convert_examples_to_features(data['train'], tokenizer, max_length=128, task='mrpc')
