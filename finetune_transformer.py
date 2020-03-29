@@ -65,4 +65,4 @@ def main(epochs, _log):
     email_results(
         folders_list=[sacred_dir],
         name_experiment=' finetuning transformer ',
-        receiver_emails=['manucelotti@gmail.com')
+        receiver_emails=['manucelotti@gmail.com'])
