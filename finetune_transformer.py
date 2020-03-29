@@ -15,7 +15,7 @@ ex = CustomExperiment('fineture_transformer', base_dir=CDIR, GPU=1)
 
 @ex.config
 def config():
-    epochs = 1
+    epochs = 0
 
 @ex.automain
 def main(epochs, _log):
