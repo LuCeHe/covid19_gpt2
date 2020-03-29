@@ -15,7 +15,7 @@ ex = CustomExperiment('fineture_transformer', base_dir=CDIR, GPU=1)
 
 @ex.config
 def config():
-    epochs = 3
+    epochs = 1
 
 @ex.automain
 def main(epochs, _log):
@@ -29,8 +29,8 @@ def main(epochs, _log):
     # Prepare dataset for GLUE as a tf.data.Dataset instance
     train_dataset = glue_convert_examples_to_features(data['train'], tokenizer, max_length=128, task='mrpc')
     valid_dataset = glue_convert_examples_to_features(data['validation'], tokenizer, max_length=128, task='mrpc')
-    train_dataset = train_dataset.shuffle(100).batch(32).repeat(2)
-    valid_dataset = valid_dataset.batch(64)
+    train_dataset = train_dataset.shuffle(100).batch(64).repeat(epochs)
+    valid_dataset = valid_dataset.batch(64).repeat(epochs)
 
     # Prepare training: Compile tf.keras model with optimizer, loss and learning rate schedule
     optimizer = tf.keras.optimizers.Adam(learning_rate=3e-5, epsilon=1e-08, clipnorm=1.0)
