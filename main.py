@@ -46,6 +46,8 @@ def main(epochs, data_repeats, _log):
     historyplotpath = os.path.join(*[sacred_dir, 'history.pdf'])
     plot_history(history, historyplotpath, epochs)
 
+    print(model.inputs)
+
     # Load the TensorFlow model in PyTorch for inspection
     model.save_pretrained('./experiments/tmp/')
     pytorch_model = BertForSequenceClassification.from_pretrained('./experiments/tmp/', from_tf=True)
