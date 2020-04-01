@@ -47,7 +47,7 @@ def main(epochs, data_repeats, _log):
     historyplotpath = os.path.join(*[sacred_dir, 'history.pdf'])
     plot_history(history, historyplotpath, epochs)
 
-    print(model.inputs)
+    print('\n   inputs: ', model.inputs)
 
     # Load the TensorFlow model in PyTorch for inspection
     model.save_pretrained('./experiments/tmp/')
@@ -63,9 +63,12 @@ def main(epochs, data_repeats, _log):
     # del inputs_1["special_tokens_mask"]  # <---- add this
     # del inputs_2["special_tokens_mask"]  # <---- add this
 
+    print()
     print(inputs_1.keys())
-    pred_1 = model.predict(**inputs_1)[0].argmax().item()
-    pred_2 = model.predict(**inputs_2)[0].argmax().item()
+    pred_1 = model.predict([inputs_1['attention_mask'], inputs_1['input_ids'], inputs_1['token_type_ids']])[0].argmax().item()
+    pred_2 = model.predict([inputs_2['attention_mask'], inputs_2['input_ids'], inputs_2['token_type_ids']])[0].argmax().item()
+
+    print()
     print("sentence_1 is", "a paraphrase" if pred_1 else "not a paraphrase", "of sentence_0")
     print("sentence_2 is", "a paraphrase" if pred_2 else "not a paraphrase", "of sentence_0")
 
