@@ -65,8 +65,8 @@ def main(epochs, data_repeats, _log):
 
     print()
     print(inputs_1.keys())
-    pred_1 = model(**inputs_1)[0].argmax().item()
-    pred_2 = model(**inputs_2)[0].argmax().item()
+    pred_1 = model(inputs=inputs_1)[0].argmax().item()
+    pred_2 = model(inputs=inputs_2)[0].argmax().item()
 
     print()
     print("sentence_1 is", "a paraphrase" if pred_1 else "not a paraphrase", "of sentence_0")
