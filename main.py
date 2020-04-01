@@ -5,6 +5,7 @@ import tensorflow_datasets
 from transformers import *
 
 # Load dataset, tokenizer, model from pretrained model/vocabulary
+from GenericTools.KerasTools.clr_callback import CyclicLR
 from GenericTools.KerasTools.convenience_tools import plot_history
 from GenericTools.SacredTools.VeryCustomSacred import CustomExperiment
 from GenericTools.StayOrganizedTools.utils import email_results
