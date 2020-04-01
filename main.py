@@ -50,7 +50,7 @@ def main(epochs, data_repeats, _log):
     print('\n   inputs: ', model.inputs)
 
     # Load the TensorFlow model in PyTorch for inspection
-    model.save_pretrained('./experiments/tmp/')
+    #model.save_pretrained('./experiments/tmp/')
     #pytorch_model = BertForSequenceClassification.from_pretrained('./experiments/tmp/', from_tf=True)
 
     # Quickly test a few predictions - MRPC is a paraphrasing task, let's see if our model learned the task
@@ -65,8 +65,8 @@ def main(epochs, data_repeats, _log):
 
     print()
     print(inputs_1.keys())
-    pred_1 = model.predict([inputs_1['attention_mask'], inputs_1['input_ids'], inputs_1['token_type_ids']])[0].argmax().item()
-    pred_2 = model.predict([inputs_2['attention_mask'], inputs_2['input_ids'], inputs_2['token_type_ids']])[0].argmax().item()
+    pred_1 = model(**inputs_1)[0].argmax().item()
+    pred_2 = model(**inputs_2)[0].argmax().item()
 
     print()
     print("sentence_1 is", "a paraphrase" if pred_1 else "not a paraphrase", "of sentence_0")
