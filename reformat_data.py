@@ -1,11 +1,11 @@
-from datetime import timedelta, datetime
-
 import glob
 import json
 import os
-import pandas as pd
 from copy import deepcopy
+from datetime import timedelta, datetime
 from random import randrange
+
+import pandas as pd
 from tqdm import tqdm
 
 
@@ -176,8 +176,36 @@ travelling_paths = {
 }
 
 
+def csv2txt():
+    csvpath = r'data/one_column.csv'
+    txtpath = r'data/covid19.txt'
+    data = pd.read_csv(csvpath)
+    n_samples =  data.shape[0]
+
+    # add end token for gpt2 and save it as one long txt
+    data.insert(2, "end", ['<|endoftext|>']*n_samples, True)
+    data = data['0'] + data['end']
+    data.to_csv(txtpath, header=None, index=None, sep=' ', mode='a')
+
+def remove_temporary_files():
+    filepaths = [r'data/clean_biorxiv.csv',
+                 r'data/clean_comm.csv',
+                 r'data/clean_noncomm.csv',
+                 r'data/clean_pmc.csv',
+                 r'data/merged.csv',
+                 r'data/one_column.csv',
+                 ]
+
+
+    for path in filepaths:
+        try:
+            os.remove(path)
+        except:
+            pass
+
+
 def main():
-    if not os.path.isfile('data/transformer_finetuner.csv'):
+    if not os.path.isfile('data/covid19.txt'):
 
         fix_nans_metadata()
 
@@ -196,19 +224,31 @@ def main():
 
             # cronological order and save
             data = data.sort_values(by=['publish_time'])
-            data.drop_duplicates(['abstract', 'text'], inplace=True)
+            data.drop_duplicates(['abstract', 'text'], inplace=True) # there is 0 nans in text, but 8475 in abstracts
             data.to_csv('data/merged.csv')
 
         # concatenate title, abstract, authors, text, references
 
         data = pd.read_csv('data/merged.csv')
+        print(data.isnull().sum(axis = 0))
+        print(data[data.isna().any(axis=1)].sample(6))
+
+        print(data.shape)
+        data.fillna('', inplace=True)
         one_column = data['title'] + data['authors'] + data['affiliations'] + data['abstract'] + data['text'] + data[
             'bibliography']
-
-        one_column.to_csv('data/transformer_finetuner.csv')
-
+        print(one_column.shape)
+        one_column.to_csv('data/one_column.csv')
+        print(one_column.head())
         # format Transformers library
+
+        csv2txt()
+
+    remove_temporary_files()
 
 
 if __name__ == '__main__':
+    pd.set_option('max_colwidth', 10)
+    pd.set_option('max_columns', 999)
     main()
+
