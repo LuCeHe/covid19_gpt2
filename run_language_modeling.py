@@ -61,7 +61,7 @@ except ImportError:
 CDIR = os.path.dirname(os.path.realpath(__file__))
 ex = CustomExperiment('covid19', base_dir=CDIR)
 
-GPU = 0
+GPU = 1
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = str(GPU)
 config = tf.compat.v1.ConfigProto()  # tf.ConfigProto()
