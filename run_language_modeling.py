@@ -474,7 +474,7 @@ def evaluate(args, model: PreTrainedModel, tokenizer: PreTrainedTokenizer, prefi
 
     return result
 
-
+@ex.automain
 def main():
     parser = argparse.ArgumentParser()
 
@@ -799,5 +799,3 @@ def main():
     return results
 
 
-if __name__ == "__main__":
-    main()
