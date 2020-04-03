@@ -59,7 +59,7 @@ except ImportError:
 
 
 CDIR = os.path.dirname(os.path.realpath(__file__))
-ex = CustomExperiment('covid19', base_dir=CDIR)
+ex = CustomExperiment('covid19', base_dir=CDIR, GPU=0)
 
 logger = logging.getLogger(__name__)
 
