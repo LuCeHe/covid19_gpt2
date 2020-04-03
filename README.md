@@ -4,4 +4,4 @@ Finetuning GPT-2 on [Kaggle Covid19 dataset](https://www.kaggle.com/allen-instit
 
 # other collections of scientific literature
 
-- https://core.ac.uk/services/#access-to-raw-data
+- [The CORE Collection](https://core.ac.uk/services/#access-to-raw-data)
