@@ -180,12 +180,23 @@ def csv2txt():
     csvpath = r'data/one_column.csv'
     txtpath = r'data/covid19.txt'
     data = pd.read_csv(csvpath)
-    n_samples =  data.shape[0]
+    n_samples = data.shape[0]
 
     # add end token for gpt2 and save it as one long txt
-    data.insert(2, "end", ['<|endoftext|>']*n_samples, True)
+    data.insert(2, "end", ['<|endoftext|>'] * n_samples, True)
     data = data['0'] + data['end']
     data.to_csv(txtpath, header=None, index=None, sep=' ', mode='a')
+
+
+def small_version():
+    longtxtpath = 'data/covid19.txt'
+    smalltxtpath = 'data/small_covid19.txt'
+    if not os.path.isfile(smalltxtpath):
+        data = pd.read_csv(longtxtpath, sep=" ", header=None)
+        small_data = data.sample(2)
+        small_data.to_csv(smalltxtpath, header=None, index=None, sep=' ', mode='a')
+
+
 
 def remove_temporary_files():
     filepaths = [r'data/clean_biorxiv.csv',
@@ -195,7 +206,6 @@ def remove_temporary_files():
                  r'data/merged.csv',
                  r'data/one_column.csv',
                  ]
-
 
     for path in filepaths:
         try:
@@ -224,13 +234,13 @@ def main():
 
             # cronological order and save
             data = data.sort_values(by=['publish_time'])
-            data.drop_duplicates(['abstract', 'text'], inplace=True) # there is 0 nans in text, but 8475 in abstracts
+            data.drop_duplicates(['abstract', 'text'], inplace=True)  # there is 0 nans in text, but 8475 in abstracts
             data.to_csv('data/merged.csv')
 
         # concatenate title, abstract, authors, text, references
 
         data = pd.read_csv('data/merged.csv')
-        print(data.isnull().sum(axis = 0))
+        print(data.isnull().sum(axis=0))
         print(data[data.isna().any(axis=1)].sample(6))
 
         print(data.shape)
@@ -245,10 +255,10 @@ def main():
         csv2txt()
 
     remove_temporary_files()
+    small_version()
 
 
 if __name__ == '__main__':
-    pd.set_option('max_colwidth', 10)
+    pd.set_option('max_colwidth', 1000)
     pd.set_option('max_columns', 999)
     main()
-
