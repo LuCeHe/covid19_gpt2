@@ -780,7 +780,7 @@ def main():
             results.update(result)
 
     email_results(
-        folders_list=[args.outputdir],
+        folders_list=[args.output_dir],
         name_experiment=' gpt2 on covid19',
         receiver_emails=['manucelotti@gmail.com'])
 
