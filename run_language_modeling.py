@@ -59,7 +59,7 @@ except ImportError:
 
 
 CDIR = os.path.dirname(os.path.realpath(__file__))
-ex = CustomExperiment('stochastic_LSNN', base_dir=CDIR)
+ex = CustomExperiment('covid19', base_dir=CDIR)
 
 GPU = 0
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
@@ -799,3 +799,5 @@ def main():
     return results
 
 
+if __name__ == "__main__":
+    main()
