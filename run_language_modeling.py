@@ -29,7 +29,7 @@ import random
 import re
 import shutil
 from typing import Dict, List, Tuple
-
+import tensorflow as tf
 import numpy as np
 import torch
 from torch.nn.utils.rnn import pad_sequence
@@ -49,6 +49,7 @@ from transformers import (
     get_linear_schedule_with_warmup,
 )
 
+from GenericTools.SacredTools.VeryCustomSacred import CustomExperiment
 from GenericTools.StayOrganizedTools.utils import email_results
 
 try:
@@ -56,6 +57,16 @@ try:
 except ImportError:
     from tensorboardX import SummaryWriter
 
+
+CDIR = os.path.dirname(os.path.realpath(__file__))
+ex = CustomExperiment('stochastic_LSNN', base_dir=CDIR)
+
+GPU = 0
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = str(GPU)
+config = tf.compat.v1.ConfigProto()  # tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.compat.v1.Session(config=config)  # tf.Session(config=config)
 
 logger = logging.getLogger(__name__)
 
@@ -779,8 +790,9 @@ def main():
             result = dict((k + "_{}".format(global_step), v) for k, v in result.items())
             results.update(result)
 
+    sacredpath = os.path.join(*[CDIR, ex.observers[0].basedir, '1'])
     email_results(
-        folders_list=[args.output_dir],
+        folders_list=[args.output_dir, sacredpath],
         name_experiment=' gpt2 on covid19',
         receiver_emails=['manucelotti@gmail.com'])
 
