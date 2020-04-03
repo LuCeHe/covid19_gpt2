@@ -467,7 +467,6 @@ def evaluate(args, model: PreTrainedModel, tokenizer: PreTrainedTokenizer, prefi
 
     return result
 
-@ex.automain
 def main():
     parser = argparse.ArgumentParser()
 
@@ -783,14 +782,14 @@ def main():
             result = dict((k + "_{}".format(global_step), v) for k, v in result.items())
             results.update(result)
 
-    sacredpath = os.path.join(*[CDIR, ex.observers[0].basedir, '1'])
+    #sacredpath = os.path.join(*[CDIR, ex.observers[0].basedir, '1'])
     email_results(
-        folders_list=[args.output_dir, sacredpath],
+        folders_list=[args.output_dir],
         name_experiment=' gpt2 on covid19',
         receiver_emails=['manucelotti@gmail.com'])
 
     return results
 
 
-#if __name__ == "__main__":
-#    main()
+if __name__ == "__main__":
+    main()
