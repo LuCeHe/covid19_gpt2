@@ -18,7 +18,10 @@ Fine-tuning the library models for language modeling on a text file (GPT, GPT-2,
 GPT and GPT-2 are fine-tuned using a causal language modeling (CLM) loss while BERT and RoBERTa are fine-tuned
 using a masked language modeling (MLM) loss.
 """
-
+"""
+original code from huggingface.co
+with minor modifications
+"""
 
 import argparse
 import glob
@@ -59,7 +62,7 @@ except ImportError:
 
 
 CDIR = os.path.dirname(os.path.realpath(__file__))
-ex = CustomExperiment('covid19', base_dir=CDIR, GPU=0)
+#ex = CustomExperiment('covid19', base_dir=CDIR, GPU=0)
 
 logger = logging.getLogger(__name__)
 
