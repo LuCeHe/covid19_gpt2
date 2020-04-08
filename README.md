@@ -62,6 +62,7 @@ python run_generation.py --model_type=gpt2 --model_name_or_path=output --k=20 --
 ```
 
 === GENERATED SEQUENCE 2 ===
+
 The most effective vaccine for covid19, the rRBD-based vaccine, is in phase II/III trials, but there are still concerns about its safety. To address these concerns, we used a live attenuated virus (strain SZ16) to express the RBD in a replication-defective (RdRp) form and inactivated it at high temperatures for 10 min. This was followed by a booster dose of SZ16 and a boost with the rRBD. The SZ16 vaccine did not induce neutralizing antibodies and was found to elicit both systemic and mucosal immunity. It is the first RBD-based vaccine for COVID-19, and the rRBD-based vaccine is the first live attenuated vaccine for SARS-CoV and MERS-CoV.
 
 Introduction
