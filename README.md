@@ -19,7 +19,7 @@ python run_language_modeling.py \
               --overwrite_output_dir \
               --block_size=200 \
               --per_gpu_train_batch_size=4  \
-              --save_steps 5000 \
+              --save_steps 200000 \
               --num_train_epochs=1
 ```
 
@@ -42,11 +42,12 @@ The outputs are still repetitive and not very informative. However I will put he
 ## sample 1
 
 ```pythonscript
-python run_language_modeling.py --output_dir=output --model_type=gpt2 --model_name_or_path=gpt2-medium --do_train --train_data_file=data/covid19.txt --do_eval --eval_data_file=data/small_covid19.txt --overwrite_output_dir --block_size=200 --per_gpu_train_batch_size=4 --save_steps 5000 --num_train_epochs=1
+python run_language_modeling.py --output_dir=output --model_type=gpt2 --model_name_or_path=gpt2-medium --do_train --train_data_file=data/covid19.txt --do_eval --eval_data_file=data/small_covid19.txt --overwrite_output_dir --block_size=200 --per_gpu_train_batch_size=4 --save_steps 200000 --num_train_epochs=1
 python run_generation.py --model_type=gpt2 --model_name_or_path=output --k=10 --length=200 --num_return_sequences=3 --prompt="The reason why covid19 finished"
 ```
 
 === GENERATED SEQUENCE 3 ===
+
 The reason why covid19 finished as the top 10 was not clear. It is possible that it was a result of the fact that many of the participants were not in the hospital and/or had to go home for other reasons. We cannot rule out the possibility of an effect due to the small number of people who were infected and/or the fact that the participants were in hospital for longer than 5 days.
 
 Discussion
