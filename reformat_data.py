@@ -1,12 +1,21 @@
-import glob
+import glob, logging
 import json
+import shutil
 import os
 from copy import deepcopy
 from datetime import timedelta, datetime
 from random import randrange
+import urllib.request
+
+import tarfile
+from tqdm import tqdm
 
 import pandas as pd
 from tqdm import tqdm
+
+logger = logging.getLogger('mylogger')
+CDIR = os.path.dirname(os.path.realpath(__file__))
+DATADIR = os.path.join(CDIR, 'data')
 
 
 def fix_nans_metadata():
@@ -197,7 +206,6 @@ def small_version():
         small_data.to_csv(smalltxtpath, header=None, index=None, sep=' ', mode='a')
 
 
-
 def remove_temporary_files():
     filepaths = [r'data/clean_biorxiv.csv',
                  r'data/clean_comm.csv',
@@ -213,12 +221,25 @@ def remove_temporary_files():
         except:
             pass
 
+    folderpaths = [r'data/biorxiv_medrxiv/',
+                   r'data/comm_use_subset/',
+                   r'data/noncomm_use_subset/',
+                   r'data/custom_license/',
+                   ]
+
+    for folder in folderpaths:
+        try:
+            shutil.rmtree(folder)
+        except:
+            pass
+
 
 def main():
     if not os.path.isfile('data/covid19.txt'):
 
         fix_nans_metadata()
 
+        logger.warn('JSON to CSV...')
         for k in travelling_paths.keys():
             if not os.path.isfile(travelling_paths[k]['to'].decode("utf-8")) and not os.path.isfile("data/merged.csv"):
                 pmc_dir = travelling_paths[k]['from']
@@ -252,13 +273,71 @@ def main():
         print(one_column.head())
         # format Transformers library
 
+        logger.warn('CSV to TXT...')
         csv2txt()
 
     remove_temporary_files()
     small_version()
 
+    logger.warn('DONE!')
+
+
+class DownloadProgressBar(tqdm):
+    def update_to(self, b=1, bsize=1, tsize=None):
+        if tsize is not None:
+            self.total = tsize
+        self.update(b * bsize - self.n)
+
+
+def download_url(url, output_path):
+    with DownloadProgressBar(unit='B', unit_scale=True,
+                             miniters=1, desc=url.split('/')[-1]) as t:
+        urllib.request.urlretrieve(url, filename=output_path, reporthook=t.update_to)
+
+
+def download_data():
+    if not os.path.isfile(r'data/covid19.txt'):
+        try:
+            os.mkdir(DATADIR)
+        except:
+            pass
+
+        logger.warn('Downloading Data...')
+        comm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/comm_use_subset.tar.gz'
+        noncomm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/noncomm_use_subset.tar.gz'
+        custom_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/custom_license.tar.gz'
+        biorxiv_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/biorxiv_medrxiv.tar.gz'
+        metadata_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/metadata.csv'
+
+        for url in [comm_url, noncomm_url, custom_url, biorxiv_url, metadata_url]:
+            _, filename = os.path.split(url)
+
+            path = os.path.join(*[CDIR, 'data', filename])
+            if not os.path.isdir(path[:-7]):
+                download_url(url, path)
+
+                if '.gz' in filename:
+                    tar = tarfile.open(path, "r:gz")
+                    tar.extractall(path=os.path.join(*[CDIR, 'data']))
+                    tar.close()
+                    move_from_folders = [os.path.join(path[:-7], folder) for folder in os.listdir(path[:-7])]
+                    move_to_folder = os.path.join(path[:-7], filename[:-7])
+                    os.mkdir(move_to_folder)
+
+                    for folder_from in move_from_folders:
+                        content = os.listdir(folder_from)
+                        for file in tqdm(content):
+                            file_from = os.path.join(folder_from, file)
+                            file_to = os.path.join(move_to_folder, file)
+                            os.rename(file_from, file_to)
+
+                        shutil.rmtree(folder_from)
+                        # os.remove(folder_from)
+                    os.remove(path)
+
 
 if __name__ == '__main__':
     pd.set_option('max_colwidth', 1000)
     pd.set_option('max_columns', 999)
+    download_data()
     main()
