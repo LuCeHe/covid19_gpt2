@@ -3,8 +3,9 @@
 Finetuning GPT-2 on [Allen Institute Covid19 dataset](https://allenai.org/data/cord-19) to generate text about the recent scientific literature. Ideally the goal is to make an automatic scientist. If it is first finetuned on a larger scientific dataset and then finetuned on the covid19 dataset the connections that the algorithm would make would be more interesting.
 
 # how to use this code
-1. run `reformat_data.py` to download the dataset and reformat it in the convenient way to use [HuggingFace](https://huggingface.co/) library
-2. run the following command for finetuning gpt2: 
+1. clone the repository with `git clone https://github.com/LuCeHe/covid19_gpt2`, get inside the folder and run `pip install -r requirements.txt`
+2. run `reformat_data.py` to download the dataset and reformat it in the convenient way to use [HuggingFace](https://huggingface.co/) library
+3. run the following command for finetuning gpt2: 
 
 ```pythonscript
 python run_language_modeling.py \
@@ -22,7 +23,7 @@ python run_language_modeling.py \
               --num_train_epochs=1
 ```
 
-3. run the following command for generating samples from the finetuned model: 
+4. run the following command for generating samples from the finetuned model: 
 
 ```pythonscript
 python run_generation.py \
