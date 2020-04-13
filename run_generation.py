@@ -27,7 +27,7 @@ import logging
 
 import numpy as np
 import torch
-from convenience_functions import email_results
+from convenience_functions.utils import email_results
 
 from transformers import (
     CTRLLMHeadModel,
