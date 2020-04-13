@@ -27,6 +27,7 @@ import logging
 
 import numpy as np
 import torch
+from convenience_functions import email_results
 
 from transformers import (
     CTRLLMHeadModel,
@@ -260,6 +261,10 @@ def main():
         generated_sequences.append(total_sequence)
         print(total_sequence)
 
+    email_results(
+        text=''.join(generated_sequences),
+        name_experiment=' GPT2 generation ',
+        receiver_emails=['manucelotti@gmail.com'])
     return generated_sequences
 
 
