@@ -1,11 +1,10 @@
 # covid19
 
-Finetuning GPT-2 on [Kaggle Covid19 dataset](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge) to generate text about the recent scientific literature. Ideally the goal is to make an automatic scientist. If it is first finetuned on a larger scientific dataset and then finetuned on the covid19 dataset the connections that the algorithm would make would be more interesting.
+Finetuning GPT-2 on [Allen Institute Covid19 dataset](https://allenai.org/data/cord-19) to generate text about the recent scientific literature. Ideally the goal is to make an automatic scientist. If it is first finetuned on a larger scientific dataset and then finetuned on the covid19 dataset the connections that the algorithm would make would be more interesting.
 
 # how to use this code
-1. create a `data` folder, download the dataset inside and unzip it
-2. run `reformat_data.py`
-3. run the following command for finetuning gpt2: 
+1. run `reformat_data.py` to download the dataset and reformat it in the convenient way to use [HuggingFace](https://huggingface.co/) library
+2. run the following command for finetuning gpt2: 
 
 ```pythonscript
 python run_language_modeling.py \
@@ -23,7 +22,7 @@ python run_language_modeling.py \
               --num_train_epochs=1
 ```
 
-4. run the following command for generating samples from the finetuned model: 
+3. run the following command for generating samples from the finetuned model: 
 
 ```pythonscript
 python run_generation.py \
@@ -73,3 +72,4 @@ In December 2019, a new coronavirus pneumonia was identified in Wuhan, China. It
 # other collections of scientific literature
 
 - [The CORE Collection](https://core.ac.uk/services/#access-to-raw-data)
+- [ArXiV collection](https://link.springer.com/article/10.1007/s11192-020-03382-z)
