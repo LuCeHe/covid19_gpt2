@@ -4,35 +4,23 @@ Finetuning GPT-2 on [Allen Institute Covid19 dataset](https://allenai.org/data/c
 
 # how to use this code
 1. clone the repository with `git clone https://github.com/LuCeHe/covid19_gpt2`, get inside the folder and run `pip install -r requirements.txt`
-2. run `reformat_data.py` to download the dataset and reformat it in the convenient way to use [HuggingFace](https://huggingface.co/) library
+2. run `reformat_data.py` to download the dataset and reformat it in the proper way to use [HuggingFace](https://huggingface.co/) library
 3. run the following command for finetuning gpt2: 
 
 ```pythonscript
-python run_language_modeling.py \
-              --output_dir=output   \
-              --model_type=gpt2   \
-              --model_name_or_path=gpt2-medium \
-              --do_train \
-              --train_data_file=data/covid19.txt \
-              --do_eval \
-              --eval_data_file=data/small_covid19.txt   \
-              --overwrite_output_dir \
-              --block_size=200 \
-              --per_gpu_train_batch_size=4  \
-              --save_steps 200000 \
-              --num_train_epochs=1
+python run_language_modeling.py --output_dir=output --model_type=gpt2 --model_name_or_path=gpt2-xl --do_train --train_data_file=data/covid19.txt --do_eval --eval_data_file=data/small_covid19.txt --overwrite_output_dir --block_size=200 --per_gpu_train_batch_size=4 --save_steps 200000 --num_train_epochs=1
 ```
 
 4. run the following command for generating samples from the finetuned model: 
 
 ```pythonscript
-python run_generation.py \
-              --model_type=gpt2 \
-              --model_name_or_path=output \
-              --k=10 \
-              --length=200 \
-              --num_return_sequences=3 \
-              --prompt="The reason why covid19 finished"
+python run_generation.py --model_type=gpt2 --model_name_or_path=output --k=10 --length=200 --num_return_sequences=4 --prompt="The reason why covid19 finished"
+```
+```pythonscript
+python run_generation.py --model_type=gpt2 --model_name_or_path=output --k=10 --length=200 --num_return_sequences=4 --prompt="An effective vaccine against covid19"
+```
+```pythonscript
+python run_generation.py --model_type=gpt2 --model_name_or_path=output --k=10 --length=200 --num_return_sequences=4 --prompt="The frequency in the X-rays for optimally breaking covid19"
 ```
 
 # interesting samples
