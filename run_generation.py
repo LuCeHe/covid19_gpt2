@@ -27,7 +27,7 @@ import logging
 
 import numpy as np
 import torch
-from convenience_functions.utils import email_results
+from covid19_gpt2.convenience_functions.utils import email_results
 
 from transformers import (
     CTRLLMHeadModel,
