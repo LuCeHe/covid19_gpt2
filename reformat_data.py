@@ -8,7 +8,6 @@ from random import randrange
 import urllib.request
 
 import tarfile
-from tqdm import tqdm
 
 import pandas as pd
 from tqdm import tqdm
