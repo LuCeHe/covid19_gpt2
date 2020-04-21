@@ -5,12 +5,13 @@ import os
 from copy import deepcopy
 from datetime import timedelta, datetime
 from random import randrange
-import urllib.request
 
 import tarfile
 
 import pandas as pd
 from tqdm import tqdm
+
+from covid19_gpt2.convenience_functions.utils import download_url
 
 logger = logging.getLogger('mylogger')
 CDIR = os.path.dirname(os.path.realpath(__file__))
@@ -279,19 +280,6 @@ def main():
     small_version()
 
     logger.warn('DONE!')
-
-
-class DownloadProgressBar(tqdm):
-    def update_to(self, b=1, bsize=1, tsize=None):
-        if tsize is not None:
-            self.total = tsize
-        self.update(b * bsize - self.n)
-
-
-def download_url(url, output_path):
-    with DownloadProgressBar(unit='B', unit_scale=True,
-                             miniters=1, desc=url.split('/')[-1]) as t:
-        urllib.request.urlretrieve(url, filename=output_path, reporthook=t.update_to)
 
 
 def download_data():
