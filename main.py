@@ -12,7 +12,7 @@ from covid19_gpt2.convenience_functions.utils import email_results
 email_results(text='requirements.txt installed', name_experiment=' GPT2 generation ',
               receiver_emails=['manucelotti@gmail.com'])
 
-print('\n[2/6] Get Articles from ArXiv...\n')
+print('\n[2/6] Get Articles from UnArXiv...\n')
 if not os.path.isfile(UNARXIVE_DATA):
     os.system('python reformat_unarxive.py')
 email_results(text='unarxive reformatted', name_experiment=' GPT2 generation ',
