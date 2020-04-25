@@ -11,7 +11,7 @@ COVID19_DATA = os.path.join(*[CDIR, r'data/covid19.txt'])
 
 UNAMODEL = os.path.join(CDIR, 'output_unarxive')
 COVMODEL = os.path.join(CDIR, 'output_covid')
-for dir in [UNAMODEL, COVMODEL]
+for dir in [UNAMODEL, COVMODEL]:
     if not os.path.isdir(dir):
         try:
             os.mkdir(dir)
