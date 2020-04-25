@@ -9,6 +9,14 @@ CDIR = os.path.dirname(os.path.realpath(__file__))
 UNARXIVE_DATA = os.path.join(*[CDIR, r'data/unarxive.txt'])
 COVID19_DATA = os.path.join(*[CDIR, r'data/covid19.txt'])
 
+UNAMODEL = os.path.join(CDIR, 'output_unarxive')
+COVMODEL = os.path.join(CDIR, 'output_covid')
+for dir in [UNAMODEL, COVMODEL]
+    if not os.path.isdir(dir):
+        try:
+            os.mkdir(dir)
+        except:
+            pass
 
 ex = CustomExperiment('stochastic_LSNN', base_dir=CDIR)
 
@@ -35,9 +43,10 @@ def main():
                   folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
+
     print('\n[4/6] Finetune on UnArXiv...\n')
     os.system('python run_language_modeling.py '
-              '--output_dir=output_unarxive '
+              '--output_dir={} '
               '--model_type=gpt2 '
               '--model_name_or_path=gpt2 '  # gpt2-xl
               '--do_train '
@@ -48,16 +57,16 @@ def main():
               '--block_size=200 '
               '--per_gpu_train_batch_size=4 '
               '--save_steps 200000 '
-              '--num_train_epochs=1')
+              '--num_train_epochs=1'.format(UNAMODEL))
     email_results(text='finetuned on unarxive', name_experiment=' GPT2 generation ',
                   folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
     print('\n[5/6] Finetune on Covid19...\n')
     os.system('python run_language_modeling.py '
-              '--output_dir=output_covid19 '
+              '--output_dir={} '
               '--model_type=gpt2 '
-              '--model_name_or_path=output_unarxive '
+              '--model_name_or_path={} '
               '--do_train '
               '--train_data_file=data/small_covid19.txt ' # covid19
               '--do_eval '
@@ -66,7 +75,7 @@ def main():
               '--block_size=200 '
               '--per_gpu_train_batch_size=4 '
               '--save_steps 200000 '
-              '--num_train_epochs=1')
+              '--num_train_epochs=1'.format(COVMODEL, UNAMODEL))
     email_results(text='finetuned on covid19', name_experiment=' GPT2 generation ',
                   folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
@@ -75,27 +84,27 @@ def main():
 
     os.system('python run_generation.py '
               '--model_type=gpt2 '
-              '--model_name_or_path=output_covid19 '
+              '--model_name_or_path={} '
               '--k=10 '
               '--length=200 '
               '--num_return_sequences=4 '
-              '--prompt="The reason why covid19 finished"')
+              '--prompt="The reason why covid19 finished"'.format(COVMODEL))
 
     os.system('python run_generation.py '
               '--model_type=gpt2 '
-              '--model_name_or_path=output_covid19 '
+              '--model_name_or_path={} '
               '--k=10 '
               '--length=200 '
               '--num_return_sequences=4 '
-              '--prompt="An effective vaccine against covid19"')
+              '--prompt="An effective vaccine against covid19"'.format(COVMODEL))
 
     os.system('python run_generation.py '
               '--model_type=gpt2 '
-              '--model_name_or_path=output_covid19 '
+              '--model_name_or_path={} '
               '--k=10 '
               '--length=200 '
               '--num_return_sequences=4 '
-              '--prompt="The frequency in the X-rays for optimally breaking covid19"')
+              '--prompt="The frequency in the X-rays for optimally breaking covid19"'.format(COVMODEL))
 
     email_results(
         folders_list=[sacred_config_dir,],
