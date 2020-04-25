@@ -19,7 +19,8 @@ if not os.path.isfile(UNATXT):
     if not os.path.isfile(tarpath):
         download_url(url, tarpath)
 
-    os.system('tar -v -xf {} -C {} | tqdm --total $(tar -tvf {} | wc -l) > /dev/null'.format(tarpath, DATADIR, tarpath))
+    os.system('pv data/unarXive.tar.bz2 | tar xzf - -C data')
+    #os.system('tar -v -xf {} -C {} | tqdm --total $(tar -tvf {} | wc -l) > /dev/null'.format(tarpath, DATADIR, tarpath))
 
     #try:
         #tar = tarfile.open(tarpath, "r:bz2")
