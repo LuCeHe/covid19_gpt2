@@ -48,9 +48,9 @@ def main():
     os.system('python run_language_modeling.py '
               '--output_dir={} '
               '--model_type=gpt2 '
-              '--model_name_or_path=gpt2 '  # gpt2-xl
+              '--model_name_or_path=gpt2-xl '  # gpt2-xl
               '--do_train '
-              '--train_data_file=data/unarxive_small.txt '  # unarxive
+              '--train_data_file=data/unarxive.txt '  # unarxive
               '--do_eval '
               '--eval_data_file=data/unarxive_small.txt '
               '--overwrite_output_dir '
@@ -68,7 +68,7 @@ def main():
               '--model_type=gpt2 '
               '--model_name_or_path={} '
               '--do_train '
-              '--train_data_file=data/covid19_small.txt ' # covid19
+              '--train_data_file=data/covid19.txt ' # covid19
               '--do_eval '
               '--eval_data_file=data/covid19_small.txt '
               '--overwrite_output_dir '
