@@ -14,21 +14,25 @@ ex = CustomExperiment('stochastic_LSNN', base_dir=CDIR)
 
 @ex.automain
 def main():
+    sacred_config_dir = os.path.join(*[CDIR, ex.observers[0].basedir, '1'])
 
     from covid19_gpt2.convenience_functions.utils import email_results
     email_results(text='requirements.txt installed', name_experiment=' GPT2 generation ',
+                  folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
     print('\n[2/6] Get Articles from UnArXiv...\n')
     if not os.path.isfile(UNARXIVE_DATA):
         os.system('python reformat_unarxive.py')
     email_results(text='unarxive reformatted', name_experiment=' GPT2 generation ',
+                  folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
     print('\n[3/6] Get Articles from Covid19...\n')
     if not os.path.isfile(COVID19_DATA):
         os.system('python reformat_covid19.py')
     email_results(text='covid19 reformatted', name_experiment=' GPT2 generation ',
+                  folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
     print('\n[4/6] Finetune on UnArXiv...\n')
@@ -46,6 +50,7 @@ def main():
               '--save_steps 200000 '
               '--num_train_epochs=1')
     email_results(text='finetuned on unarxive', name_experiment=' GPT2 generation ',
+                  folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
     print('\n[5/6] Finetune on Covid19...\n')
@@ -63,6 +68,7 @@ def main():
               '--save_steps 200000 '
               '--num_train_epochs=1')
     email_results(text='finetuned on covid19', name_experiment=' GPT2 generation ',
+                  folders_list=[sacred_config_dir, ],
                   receiver_emails=['manucelotti@gmail.com'])
 
     print('\n[6/6] Generate new literature...\n')
@@ -91,9 +97,7 @@ def main():
               '--num_return_sequences=4 '
               '--prompt="The frequency in the X-rays for optimally breaking covid19"')
 
-    sacred_config_dir = os.path.join(*[CDIR, ex.observers[0].basedir, '1'])
     email_results(
         folders_list=[sacred_config_dir,],
         name_experiment=' GPT2 generation ',
-        receiver_emails=['manucelotti@gmail.com'],
-        except_files='gif_image')
+        receiver_emails=['manucelotti@gmail.com'])
