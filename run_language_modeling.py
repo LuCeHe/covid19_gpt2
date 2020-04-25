@@ -52,9 +52,6 @@ from transformers import (
     get_linear_schedule_with_warmup,
 )
 
-#from GenericTools.SacredTools.VeryCustomSacred import CustomExperiment
-#from GenericTools.StayOrganizedTools.utils import email_results
-
 try:
     from torch.utils.tensorboard import SummaryWriter
 except ImportError:
@@ -784,12 +781,6 @@ def main():
             result = evaluate(args, model, tokenizer, prefix=prefix)
             result = dict((k + "_{}".format(global_step), v) for k, v in result.items())
             results.update(result)
-
-    #sacredpath = os.path.join(*[CDIR, ex.observers[0].basedir, '1'])
-    email_results(
-        folders_list=[args.output_dir],
-        name_experiment=' gpt2 on covid19',
-        receiver_emails=['manucelotti@gmail.com'])
 
     return results
 
