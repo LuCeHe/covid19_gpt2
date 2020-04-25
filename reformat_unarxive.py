@@ -17,7 +17,10 @@ if not os.path.isfile(UNATXT):
         pass
 
     if not os.path.isfile(tarpath):
-        download_url(url, tarpath)
+        try:
+            download_url(url, tarpath)
+        except Exception as e:
+            print(e)
 
     try:
         pfo = ProgressFileObject(tarpath)
