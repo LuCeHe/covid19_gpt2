@@ -1,7 +1,7 @@
 import glob, logging
 import json
 import shutil
-import os
+import os, io
 from copy import deepcopy
 from datetime import timedelta, datetime
 from random import randrange
@@ -33,9 +33,9 @@ def fix_nans_metadata():
         index = metadata['publish_time'].index[metadata['publish_time'].isnull()]
         for i in index:
             sample = metadata['publish_time'].sample(1).values[0]
-            print(sample)
+            #print(sample)
             metadata['publish_time'][i] = sample
-            print(metadata['publish_time'][i])
+            #print(metadata['publish_time'][i])
 
         metadata.to_csv('data/nonan_metadata.csv', index=False)
 
@@ -260,16 +260,16 @@ def main():
         # concatenate title, abstract, authors, text, references
 
         data = pd.read_csv('data/merged.csv')
-        print(data.isnull().sum(axis=0))
-        print(data[data.isna().any(axis=1)].sample(6))
+        #print(data.isnull().sum(axis=0))
+        #print(data[data.isna().any(axis=1)].sample(6))
 
-        print(data.shape)
+        #print(data.shape)
         data.fillna('', inplace=True)
         one_column = data['title'] + data['authors'] + data['affiliations'] + data['abstract'] + data['text'] + data[
             'bibliography']
-        print(one_column.shape)
+        #print(one_column.shape)
         one_column.to_csv('data/one_column.csv')
-        print(one_column.head())
+        #print(one_column.head())
         # format Transformers library
 
         logger.warn('CSV to TXT...')
@@ -299,9 +299,12 @@ def download_data():
 
                 if '.gz' in filename:
                     #tar = tarfile.open(path, "r:gz")
-                    tar = tarfile.open(fileobj=ProgressFileObject(path))
+                    pfo = ProgressFileObject(path)
+                    tar = tarfile.open(fileobj=pfo)
                     tar.extractall(path=os.path.join(*[CDIR, 'data']))
                     tar.close()
+                    pfo.close()
+
                     move_from_folders = [os.path.join(path[:-7], folder) for folder in os.listdir(path[:-7])]
                     move_to_folder = os.path.join(path[:-7], filename[:-7])
                     os.mkdir(move_to_folder)

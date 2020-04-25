@@ -29,8 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+import os, sys, io
 import logging
-import os
 
 import numpy as np
 import yagmail
@@ -102,10 +102,6 @@ def small_version(long_txt, short_txt):
         small_data.to_csv(short_txt, header=None, index=None, sep=' ', mode='a')
 
 
-import io
-import os, sys
-import tarfile
-
 
 class ProgressFileObject(io.FileIO):
     def __init__(self, path, *args, **kwargs):
@@ -113,7 +109,10 @@ class ProgressFileObject(io.FileIO):
         io.FileIO.__init__(self, path, *args, **kwargs)
 
     def read(self, size):
-        sys.stdout.write("Decompress progress: {}% \r".format(np.array(self.tell()/self._total_size*100).round(3)))
-        sys.stdout.flush()
+        percentage = np.array(self.tell()/self._total_size*100).round(3)
+        percentage_string = str(percentage*1e3)
+        if percentage_string[-2] == '5':
+            sys.stdout.write("Decompress progress: {}% \r".format(percentage))
+            sys.stdout.flush()
         return io.FileIO.read(self, size)
 

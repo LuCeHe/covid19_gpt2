@@ -20,9 +20,11 @@ if not os.path.isfile(UNATXT):
         download_url(url, tarpath)
 
     try:
-        tar = tarfile.open(fileobj=ProgressFileObject(tarpath))
+        pfo = ProgressFileObject(tarpath)
+        tar = tarfile.open(fileobj=pfo)
         tar.extractall('data')
         tar.close()
+        pfo.close()
     except KeyboardInterrupt:
         pass
 
@@ -37,9 +39,15 @@ if not os.path.isfile(UNATXT):
                     f_write.write(line)
                 f_write.write('<|endoftext|>')
 
+
+    with open(UNASMALLTXT, 'w', encoding='cp850', errors='replace') as f_write:
+        for article in tqdm(articles[:2]):
+            with open(r'data/unarXive/papers/' + article, 'r', encoding='cp850', errors='replace') as f_read:
+                for line in f_read:
+                    f_write.write(line)
+                f_write.write('<|endoftext|>')
+
     shutil.rmtree(r'data/unarXive/', ignore_errors=True)
-    #os.remove('data/unarXive.tar.bz2')
+    os.remove('data/unarXive.tar.bz2')
 
-
-    small_version(UNATXT, UNASMALLTXT)
 
