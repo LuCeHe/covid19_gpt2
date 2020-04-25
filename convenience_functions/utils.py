@@ -91,3 +91,12 @@ def email_results(
                                                                                            '\n'.join(failed))]
         for email in receiver_emails:
             yag.send(to=email, contents=contents, subject=subject)
+
+
+
+def small_version(long_txt, short_txt):
+    if not os.path.isfile(short_txt):
+        data = pd.read_csv(long_txt, sep=" ", header=None)
+        small_data = data.sample(2)
+        small_data.to_csv(short_txt, header=None, index=None, sep=' ', mode='a')
+

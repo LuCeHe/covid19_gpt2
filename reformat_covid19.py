@@ -11,11 +11,19 @@ import tarfile
 import pandas as pd
 from tqdm import tqdm
 
-from covid19_gpt2.convenience_functions.utils import download_url
+from covid19_gpt2.convenience_functions.utils import download_url, small_version
 
 logger = logging.getLogger('mylogger')
 CDIR = os.path.dirname(os.path.realpath(__file__))
 DATADIR = os.path.join(CDIR, 'data')
+COVIDTXT = os.path.join(DATADIR, 'covid19.txt')
+COVIDSMALLTXT = os.path.join(DATADIR, 'covid19_small.txt')
+
+comm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/comm_use_subset.tar.gz'
+noncomm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/noncomm_use_subset.tar.gz'
+custom_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/custom_license.tar.gz'
+biorxiv_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/biorxiv_medrxiv.tar.gz'
+metadata_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/metadata.csv'
 
 
 def fix_nans_metadata():
@@ -187,7 +195,7 @@ travelling_paths = {
 
 def csv2txt():
     csvpath = r'data/one_column.csv'
-    txtpath = r'data/covid19.txt'
+    txtpath = COVIDTXT
     data = pd.read_csv(csvpath)
     n_samples = data.shape[0]
 
@@ -195,15 +203,6 @@ def csv2txt():
     data.insert(2, "end", ['<|endoftext|>'] * n_samples, True)
     data = data['0'] + data['end']
     data.to_csv(txtpath, header=None, index=None, sep=' ', mode='a')
-
-
-def small_version():
-    longtxtpath = 'data/covid19.txt'
-    smalltxtpath = 'data/small_covid19.txt'
-    if not os.path.isfile(smalltxtpath):
-        data = pd.read_csv(longtxtpath, sep=" ", header=None)
-        small_data = data.sample(2)
-        small_data.to_csv(smalltxtpath, header=None, index=None, sep=' ', mode='a')
 
 
 def remove_temporary_files():
@@ -235,7 +234,7 @@ def remove_temporary_files():
 
 
 def main():
-    if not os.path.isfile('data/covid19.txt'):
+    if not os.path.isfile(COVIDTXT):
 
         fix_nans_metadata()
 
@@ -277,24 +276,19 @@ def main():
         csv2txt()
 
     remove_temporary_files()
-    small_version()
+    small_version(COVIDTXT, COVIDSMALLTXT)
 
     logger.warn('DONE!')
 
 
 def download_data():
-    if not os.path.isfile(r'data/covid19.txt'):
+    if not os.path.isfile(COVIDTXT):
         try:
             os.mkdir(DATADIR)
         except:
             pass
 
         logger.warn('Downloading Data...')
-        comm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/comm_use_subset.tar.gz'
-        noncomm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/noncomm_use_subset.tar.gz'
-        custom_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/custom_license.tar.gz'
-        biorxiv_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/biorxiv_medrxiv.tar.gz'
-        metadata_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/metadata.csv'
 
         for url in [comm_url, noncomm_url, custom_url, biorxiv_url, metadata_url]:
             _, filename = os.path.split(url)
@@ -313,10 +307,11 @@ def download_data():
 
                     for folder_from in move_from_folders:
                         content = os.listdir(folder_from)
-                        for file in tqdm(content):
-                            file_from = os.path.join(folder_from, file)
-                            file_to = os.path.join(move_to_folder, file)
-                            os.rename(file_from, file_to)
+                        if not 'pmc' in folder_from:
+                            for file in tqdm(content):
+                                file_from = os.path.join(folder_from, file)
+                                file_to = os.path.join(move_to_folder, file)
+                                os.rename(file_from, file_to)
 
                         shutil.rmtree(folder_from)
                         # os.remove(folder_from)
