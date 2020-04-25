@@ -30,6 +30,8 @@ if not os.path.isfile(UNATXT):
         pfo.close()
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        print(e)
 
     articles = os.listdir(r'data/unarXive/papers')
     articles = sorted([article for article in articles if article[:2] in ['20', '19', '18', '17']])  # ]])
