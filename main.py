@@ -18,7 +18,7 @@ for dir in [UNAMODEL, COVMODEL]:
         except:
             pass
 
-ex = CustomExperiment('stochastic_LSNN', base_dir=CDIR)
+ex = CustomExperiment('stochastic_LSNN', base_dir=CDIR, GPU=0)
 
 @ex.automain
 def main():
