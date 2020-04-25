@@ -68,9 +68,9 @@ def main():
               '--model_type=gpt2 '
               '--model_name_or_path={} '
               '--do_train '
-              '--train_data_file=data/small_covid19.txt ' # covid19
+              '--train_data_file=data/covid19_small.txt ' # covid19
               '--do_eval '
-              '--eval_data_file=data/small_covid19.txt '
+              '--eval_data_file=data/covid19_small.txt '
               '--overwrite_output_dir '
               '--block_size=200 '
               '--per_gpu_train_batch_size=4 '
