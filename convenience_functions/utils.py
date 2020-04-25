@@ -36,6 +36,7 @@ import numpy as np
 import yagmail
 from tqdm import tqdm
 import urllib.request
+import pandas as pd
 
 logger = logging.getLogger('mylogger')
 
@@ -99,4 +100,20 @@ def small_version(long_txt, short_txt):
         data = pd.read_csv(long_txt, sep=" ", header=None)
         small_data = data.sample(2)
         small_data.to_csv(short_txt, header=None, index=None, sep=' ', mode='a')
+
+
+import io
+import os, sys
+import tarfile
+
+
+class ProgressFileObject(io.FileIO):
+    def __init__(self, path, *args, **kwargs):
+        self._total_size = os.path.getsize(path)
+        io.FileIO.__init__(self, path, *args, **kwargs)
+
+    def read(self, size):
+        sys.stdout.write("Decompress progress: {}% \r".format(np.array(self.tell()/self._total_size*100).round(3)))
+        sys.stdout.flush()
+        return io.FileIO.read(self, size)
 

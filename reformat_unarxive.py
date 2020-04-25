@@ -1,6 +1,6 @@
 import tarfile, os, shutil
 from tqdm import tqdm
-from covid19_gpt2.convenience_functions.utils import download_url, small_version
+from covid19_gpt2.convenience_functions.utils import download_url, small_version, ProgressFileObject
 
 CDIR = os.path.dirname(os.path.realpath(__file__))
 DATADIR = os.path.join(CDIR, 'data')
@@ -19,16 +19,12 @@ if not os.path.isfile(UNATXT):
     if not os.path.isfile(tarpath):
         download_url(url, tarpath)
 
-    os.system('pv data/unarXive.tar.bz2 | tar xzf - -C data')
-    #os.system('tar -v -xf {} -C {} | tqdm --total $(tar -tvf {} | wc -l) > /dev/null'.format(tarpath, DATADIR, tarpath))
-
-    #try:
-        #tar = tarfile.open(tarpath, "r:bz2")
-
-        #tar.extractall('data')
-        #tar.close()
-    #except KeyboardInterrupt:
-    #    pass
+    try:
+        tar = tarfile.open(fileobj=ProgressFileObject(tarpath))
+        tar.extractall('data')
+        tar.close()
+    except KeyboardInterrupt:
+        pass
 
     articles = os.listdir(r'data/unarXive/papers')
     articles = sorted([article for article in articles if article[:2] in ['20', '19', '18', '17']])  # ]])
@@ -42,7 +38,7 @@ if not os.path.isfile(UNATXT):
                 f_write.write('<|endoftext|>')
 
     shutil.rmtree(r'data/unarXive/', ignore_errors=True)
-    os.remove('data/unarXive.tar.bz2')
+    #os.remove('data/unarXive.tar.bz2')
 
 
     small_version(UNATXT, UNASMALLTXT)

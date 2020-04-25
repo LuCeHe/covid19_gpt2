@@ -11,7 +11,7 @@ import tarfile
 import pandas as pd
 from tqdm import tqdm
 
-from covid19_gpt2.convenience_functions.utils import download_url, small_version
+from covid19_gpt2.convenience_functions.utils import download_url, small_version, ProgressFileObject
 
 logger = logging.getLogger('mylogger')
 CDIR = os.path.dirname(os.path.realpath(__file__))
@@ -298,7 +298,8 @@ def download_data():
                 download_url(url, path)
 
                 if '.gz' in filename:
-                    tar = tarfile.open(path, "r:gz")
+                    #tar = tarfile.open(path, "r:gz")
+                    tar = tarfile.open(fileobj=ProgressFileObject(path))
                     tar.extractall(path=os.path.join(*[CDIR, 'data']))
                     tar.close()
                     move_from_folders = [os.path.join(path[:-7], folder) for folder in os.listdir(path[:-7])]
