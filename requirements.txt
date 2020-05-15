@@ -7,5 +7,3 @@ torchvision==0.6.0
 -f https://download.pytorch.org/whl/torch_stable.html
 transformers==2.7.0
 numpy==1.18.1
-tensorboardX==2.0
-tensorflow==2.1.0
