@@ -28,6 +28,7 @@ if not os.path.isfile(UNATXT):
 
     if not os.path.isfile(tarpath):
         try:
+            print(url)
             download_url(url, tarpath)
         except Exception as e:
             print(e)
