@@ -1,7 +1,7 @@
 import os
 
 print('\n[1/6] Pip install requirements...\n')
-os.system('pip install -r requirements.txt')
+#os.system('pip install -r requirements.txt')
 
 from covid19_gpt2.convenience_functions.VeryCustomSacred import CustomExperiment
 
