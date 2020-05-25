@@ -24,6 +24,7 @@ noncomm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/la
 custom_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/custom_license.tar.gz'
 biorxiv_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/biorxiv_medrxiv.tar.gz'
 metadata_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/metadata.csv'
+covid_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/document_parses.tar.gz'
 
 
 def fix_nans_metadata():
@@ -33,9 +34,9 @@ def fix_nans_metadata():
         index = metadata['publish_time'].index[metadata['publish_time'].isnull()]
         for i in index:
             sample = metadata['publish_time'].sample(1).values[0]
-            #print(sample)
+            # print(sample)
             metadata['publish_time'][i] = sample
-            #print(metadata['publish_time'][i])
+            # print(metadata['publish_time'][i])
 
         metadata.to_csv('data/nonan_metadata.csv', index=False)
 
@@ -178,6 +179,12 @@ def generate_clean_df(all_files):
 
 
 travelling_paths = {
+    'docs': {
+        'from': b'data/document_parses/pdf_json/',
+        'to': b'data/clean_docs.csv'},
+}
+
+"""
     'biorxiv': {
         'from': b'data/biorxiv_medrxiv/biorxiv_medrxiv/',
         'to': b'data/clean_biorxiv.csv'},
@@ -191,25 +198,21 @@ travelling_paths = {
         'from': b'data/noncomm_use_subset/noncomm_use_subset/',
         'to': b'data/clean_noncomm.csv'}
 }
-
+"""
 
 def csv2txt():
     csvpath = r'data/one_column.csv'
-    txtpath = COVIDTXT
     data = pd.read_csv(csvpath)
     n_samples = data.shape[0]
 
     # add end token for gpt2 and save it as one long txt
     data.insert(2, "end", ['<|endoftext|>'] * n_samples, True)
     data = data['0'] + data['end']
-    data.to_csv(txtpath, header=None, index=None, sep=' ', mode='a')
+    data.to_csv(COVIDTXT, header=None, index=None, sep=' ', mode='a')
 
 
 def remove_temporary_files():
-    filepaths = [r'data/clean_biorxiv.csv',
-                 r'data/clean_comm.csv',
-                 r'data/clean_noncomm.csv',
-                 r'data/clean_pmc.csv',
+    filepaths = [r'data/clean_*',
                  r'data/merged.csv',
                  r'data/one_column.csv',
                  ]
@@ -220,7 +223,8 @@ def remove_temporary_files():
         except:
             pass
 
-    folderpaths = [r'data/biorxiv_medrxiv/',
+    folderpaths = [r'data/document_parses/',
+                   r'data/biorxiv_medrxiv/',
                    r'data/comm_use_subset/',
                    r'data/noncomm_use_subset/',
                    r'data/custom_license/',
@@ -233,7 +237,7 @@ def remove_temporary_files():
             pass
 
 
-def main():
+def json2txt():
     if not os.path.isfile(COVIDTXT):
 
         fix_nans_metadata()
@@ -258,20 +262,13 @@ def main():
             data.to_csv('data/merged.csv')
 
         # concatenate title, abstract, authors, text, references
-
         data = pd.read_csv('data/merged.csv')
-        #print(data.isnull().sum(axis=0))
-        #print(data[data.isna().any(axis=1)].sample(6))
-
-        #print(data.shape)
         data.fillna('', inplace=True)
         one_column = data['title'] + data['authors'] + data['affiliations'] + data['abstract'] + data['text'] + data[
             'bibliography']
-        #print(one_column.shape)
         one_column.to_csv('data/one_column.csv')
-        #print(one_column.head())
+        
         # format Transformers library
-
         logger.warn('CSV to TXT...')
         csv2txt()
 
@@ -290,40 +287,26 @@ def download_data():
 
         logger.warn('Downloading Data...')
 
-        for url in [comm_url, noncomm_url, custom_url, biorxiv_url, metadata_url]:
-            _, filename = os.path.split(url)
+        _, filename = os.path.split(covid_url)
 
-            path = os.path.join(*[CDIR, 'data', filename])
-            if not os.path.isdir(path[:-7]):
+        path = os.path.join(*[CDIR, 'data', filename])
+        if not os.path.isdir(path[:-7]):
+            if not os.path.isfile(path):
                 download_url(url, path)
 
-                if '.gz' in filename:
-                    #tar = tarfile.open(path, "r:gz")
-                    pfo = ProgressFileObject(path)
-                    tar = tarfile.open(fileobj=pfo)
-                    tar.extractall(path=os.path.join(*[CDIR, 'data']))
-                    tar.close()
-                    pfo.close()
+            if '.gz' in filename:
+                # tar = tarfile.open(path, "r:gz")
+                pfo = ProgressFileObject(path)
+                tar = tarfile.open(fileobj=pfo)
+                tar.extractall(path=os.path.join(*[CDIR, 'data']))
+                tar.close()
+                pfo.close()
 
-                    move_from_folders = [os.path.join(path[:-7], folder) for folder in os.listdir(path[:-7])]
-                    move_to_folder = os.path.join(path[:-7], filename[:-7])
-                    os.mkdir(move_to_folder)
-
-                    for folder_from in move_from_folders:
-                        content = os.listdir(folder_from)
-                        if not 'pmc' in folder_from:
-                            for file in tqdm(content):
-                                file_from = os.path.join(folder_from, file)
-                                file_to = os.path.join(move_to_folder, file)
-                                os.rename(file_from, file_to)
-
-                        shutil.rmtree(folder_from)
-                        # os.remove(folder_from)
-                    os.remove(path)
+            os.remove(path)
 
 
 if __name__ == '__main__':
     pd.set_option('max_colwidth', 1000)
     pd.set_option('max_columns', 999)
     download_data()
-    main()
+    json2txt()

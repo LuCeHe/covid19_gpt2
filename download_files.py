@@ -10,7 +10,7 @@ noncomm_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/la
 custom_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/custom_license.tar.gz'
 biorxiv_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/biorxiv_medrxiv.tar.gz'
 metadata_url = 'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/metadata.csv'
-
+covid_url = r'https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/latest/document_parses.tar.gz'
 
 url = 'https://zenodo.org/record/3385851/files/unarXive.tar.bz2?download=1'
 tarpath = os.path.join(DATADIR, 'unarXive.tar.bz2')
@@ -34,7 +34,7 @@ if not os.path.isfile(UNATXT):
             print(e)
 
 
-if not os.path.isfile(COVIDTXT):
+if not False: #os.path.isfile(COVIDTXT):
     try:
         os.mkdir(DATADIR)
     except:
@@ -42,7 +42,7 @@ if not os.path.isfile(COVIDTXT):
 
     print('Downloading Data...')
 
-    for url in [comm_url, noncomm_url, custom_url, biorxiv_url, metadata_url]:
+    for url in [covid_url]: #[comm_url, noncomm_url, custom_url, biorxiv_url, metadata_url]:
         _, filename = os.path.split(url)
 
         path = os.path.join(*[CDIR, 'data', filename])
