@@ -53,6 +53,6 @@ if not os.path.isfile(UNATXT):
                 f_write.write('<|endoftext|>')
 
     shutil.rmtree(r'data/unarXive/', ignore_errors=True)
-    os.remove('data/unarXive.tar.bz2')
+    #os.remove('data/unarXive.tar.bz2')
 
 

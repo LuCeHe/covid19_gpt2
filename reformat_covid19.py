@@ -302,7 +302,7 @@ def download_data():
                 tar.close()
                 pfo.close()
 
-            os.remove(path)
+        #os.remove(path)
 
 
 if __name__ == '__main__':
