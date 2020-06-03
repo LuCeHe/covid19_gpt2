@@ -10,7 +10,7 @@ tarpath = os.path.join(DATADIR, 'unarXive.tar.bz2')
 UNATXT = os.path.join(DATADIR, 'unarxive.txt')
 UNASMALLTXT = os.path.join(DATADIR, 'unarxive_small.txt')
 
-if not os.path.isfile(UNATXT):
+if not False: # os.path.isfile(UNATXT):
     try:
         os.mkdir(DATADIR)
     except:
@@ -25,7 +25,8 @@ if not os.path.isfile(UNATXT):
     try:
         pfo = ProgressFileObject(tarpath)
         tar = tarfile.open(fileobj=pfo)
-        tar.extractall('data')
+        print(tar.getmembers())
+        #tar.extractall('data')
         tar.close()
         pfo.close()
     except KeyboardInterrupt:
@@ -33,6 +34,7 @@ if not os.path.isfile(UNATXT):
     except Exception as e:
         print(e)
 
+    """
     articles = os.listdir(r'data/unarXive/papers')
     articles = sorted([article for article in articles if article[:2] in ['20', '19', '18', '17']])  # ]])
 
@@ -54,5 +56,6 @@ if not os.path.isfile(UNATXT):
 
     shutil.rmtree(r'data/unarXive/', ignore_errors=True)
     #os.remove('data/unarXive.tar.bz2')
+    """
 
 
