@@ -29,9 +29,9 @@ def main():
     #              folders_list=[sacred_config_dir, ],
     #              receiver_emails=['manucelotti@gmail.com'])
 
-    print('\n[2/6] Get Articles from UnArXiv...\n')
-    if not os.path.isfile(UNARXIVE_DATA):
-        os.system('python reformat_unarxive.py')
+    #print('\n[2/6] Get Articles from UnArXiv...\n')
+    #if not os.path.isfile(UNARXIVE_DATA):
+    #    os.system('python reformat_unarxive.py')
     #email_results(text='unarxive reformatted', name_experiment=' GPT2 generation ',
     #              folders_list=[sacred_config_dir, ],
     #              receiver_emails=['manucelotti@gmail.com'])
@@ -43,7 +43,7 @@ def main():
     #              folders_list=[sacred_config_dir, ],
     #              receiver_emails=['manucelotti@gmail.com'])
 
-
+    """
     print('\n[4/6] Finetune on UnArXiv...\n')
     os.system('python run_language_modeling.py '
               '--output_dir={} '
@@ -61,6 +61,7 @@ def main():
     #email_results(text='finetuned on unarxive', name_experiment=' GPT2 generation ',
     #              folders_list=[sacred_config_dir, ],
     #              receiver_emails=['manucelotti@gmail.com'])
+    """
 
     print('\n[5/6] Finetune on Covid19...\n')
     os.system('python run_language_modeling.py '
@@ -75,7 +76,7 @@ def main():
               '--block_size=200 '
               '--per_gpu_train_batch_size=4 '
               '--save_steps 200000 '
-              '--num_train_epochs=1'.format(COVMODEL, UNAMODEL))
+              '--num_train_epochs=1'.format(COVMODEL, 'gpt2-xl'))   #(COVMODEL, UNAMODEL))
     #email_results(text='finetuned on covid19', name_experiment=' GPT2 generation ',
     #              folders_list=[sacred_config_dir, ],
     #              receiver_emails=['manucelotti@gmail.com'])
